@@ -6,12 +6,12 @@ import com.challenge.v2.commons.model.SalePointsCost;
 
 public interface SalePointsCostService {
 	
-	public SalePointsCost saveCostBetweenSalePoints();
+	public Boolean saveCostBetweenSalePoints(SalePointsCost request);
 	
-    public Boolean deleteCostBetweenSalePoints();
+    public Boolean deleteCostBetweenSalePoints(SalePointsCost request);
 	
-    public List<SalePointsCost> getAllCostsToSalePoint();
+    public List<SalePointsCost> getAllCostsToSalePoint(Integer originSalePointId);
 	
-    public SalePointsCost getMinimumCostToSalePoint();
+    public String getMinimumCostToSalePoint(SalePointsCost request);
 
 }

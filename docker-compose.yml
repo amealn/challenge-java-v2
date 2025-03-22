@@ -1,3 +1,4 @@
+version: "3.8"
 services:
   redis:
     image: redis:latest
@@ -10,7 +11,7 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       retries: 5
-      start_period: 10s
+      start_period: 20s
       timeout: 5s
 
   app:
@@ -21,8 +22,11 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_REDIS_HOST=redis
-      - SPRING_REDIS_PORT=6379
+      - SPRING_REDIS_HOST=${SPRING_REDIS_HOST}
+      - SPRING_REDIS_PORT=${SPRING_REDIS_PORT}
+      - SPRING_CACHE_TYPE=${SPRING_CACHE_TYPE}
+      - MONGODB_ATLAS_URI=${MONGODB_ATLAS_URI}
+      - SPRING_PROFILES_ACTIVE=prod
     depends_on:
       - redis
     networks:
