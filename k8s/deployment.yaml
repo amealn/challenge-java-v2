@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: challenge-java-v2-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: challenge-java-v2
+  template:
+    metadata:
+      labels:
+        app: challenge-java-v2
+    spec:
+      containers:
+        - name: app
+          image: challenge-java-v2:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 2911
+              hostPort: 2911
+              protocol: TCP
+          env:
+            - name: SPRING_REDIS_HOST
+              value: redis-service
+            - name: SPRING_REDIS_PORT
+              value: "6379"
+            - name: SPRING_CACHE_TYPE
+              value: "redis"
+            - name: SERVER_PORT
+              value: "2911"
+            - name: KEYSTORE_PATH
+              value: "classpath:keystore.p12"
+            - name: KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: challenge-java-v2-secrets
+                  key: keystore_password
+            - name: MONGO_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: challenge-java-v2-secrets
+                  key: mongo_connection_string

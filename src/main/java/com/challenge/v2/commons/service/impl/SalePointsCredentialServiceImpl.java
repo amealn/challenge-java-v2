@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.challenge.v2.commons.model.SalePointCredential;
 import com.challenge.v2.commons.repository.cache.CacheService;
-import com.challenge.v2.commons.repository.dao.SalePointCredentialDao;
+import com.challenge.v2.commons.repository.mongo.dao.SalePointCredentialDao;
 import com.challenge.v2.commons.service.GenericSalePointService;
 
 @Service("salePointsCredentialService")

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.challenge.v2.commons.model.SalePointCredential;
 import com.challenge.v2.commons.service.GenericSalePointService;
+import com.challenge.v2.controllers.model.Response;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -28,26 +29,26 @@ public class SalePointsCredentialController {
 	
 	@GetMapping(path = "/getAllSalePointsCredentials")
 	@Operation(summary = "Get all sale points credentials")
-    public List<SalePointCredential> getAllSalePointsCredentials() {
-        return salePointsCredentialService.getAll();
+    public Response<List<SalePointCredential>> getAllSalePointsCredentials() {
+        return new Response<>(salePointsCredentialService.getAll());
     }
 	
 	@PostMapping(path = "/saveSalePointCredential")
 	@Operation(summary = "Saves a sale point credential")
-    public SalePointCredential saveSalePointCredential(@Valid @RequestBody SalePointCredential salePoint) {
-        return salePointsCredentialService.save(salePoint);
+    public Response<SalePointCredential> saveSalePointCredential(@Valid @RequestBody SalePointCredential salePoint) {
+        return new Response<>(salePointsCredentialService.save(salePoint));
     }
 	
 	@PostMapping(path = "/updateSalePointCredential")
 	@Operation(summary = "Updates a sale point credential")
-    public SalePointCredential updateSalePointCredential(@Valid @RequestBody SalePointCredential salePoint) {
-        return salePointsCredentialService.update(salePoint);
+    public Response<SalePointCredential> updateSalePointCredential(@Valid @RequestBody SalePointCredential salePoint) {
+        return new Response<>(salePointsCredentialService.update(salePoint));
     }
 	
 	@PostMapping(path = "/deleteSalePointCredential")
 	@Operation(summary = "Deletes a sale point credential")
-    public Boolean deleteSalePointCredential(@NotNull @RequestBody Integer id) {
-        return salePointsCredentialService.delete(id);
+    public Response<Boolean> deleteSalePointCredential(@NotNull @RequestBody Integer id) {
+        return new Response<>(salePointsCredentialService.delete(id));
     }
 
 }

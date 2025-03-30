@@ -1,8 +1,0 @@
-FROM maven:3.8.1-openjdk-17-slim
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-COPY mvnw .
-COPY .mvn ./.mvn
-RUN mvn dependency:resolve
-CMD ["mvn", "verify"]

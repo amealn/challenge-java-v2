@@ -1,4 +1,4 @@
-package com.challenge.v2.commons.repository.dao;
+package com.challenge.v2.commons.repository.mongo.dao;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
