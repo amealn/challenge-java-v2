@@ -2,7 +2,6 @@ package com.challenge.v2.commons.repository.cache;
 
 import java.util.Map;
 
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import com.challenge.v2.commons.model.DijkstraNode;
