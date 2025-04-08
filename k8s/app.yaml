@@ -12,14 +12,26 @@ spec:
       labels:
         app: challenge-java-v2
     spec:
+      volumes:
+        - name: app-logs
+          emptyDir: {}
+        - name: fluent-bit-config
+          configMap:
+            name: fluent-bit-config
       containers:
         - name: app
           image: challenge-java-v2:latest
           imagePullPolicy: Never
+          securityContext:
+            privileged: true
+            runAsUser: 0
           ports:
             - containerPort: 2911
               hostPort: 2911
               protocol: TCP
+          volumeMounts:
+            - name: app-logs
+              mountPath: /var/log/app
           env:
             - name: SPRING_REDIS_HOST
               value: redis-service
@@ -41,3 +53,29 @@ spec:
                 secretKeyRef:
                   name: challenge-java-v2-secrets
                   key: mongo_connection_string
+        - name: log-forwarder
+          image: fluent/fluent-bit:latest
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          command: ["/fluent-bit/bin/fluent-bit", "-c", "/fluent-bit/etc/fluent-bit.conf"]
+          volumeMounts:
+            - name: app-logs
+              mountPath: /var/log/app
+              readOnly: true
+            - name: fluent-bit-config
+              mountPath: /fluent-bit/etc/
+              readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+spec:
+  selector:
+    app: challenge-java-v2
+  ports:
+    - protocol: TCP
+      port: 2911
+      targetPort: 2911
+  type: ClusterIP

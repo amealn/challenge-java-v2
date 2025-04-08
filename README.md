@@ -1,70 +1,91 @@
-#Sale Points API (challenge-java-v2)
+# 🚀 Sale Points API (challenge-java-v2) 🚀
 
-This service manages sale points, its costs and its credentials, providing secure access and data retrieval. It leverages Spring Boot, Redis for caching, and MongoDB for persistent storage, all containerized with Docker for easy deployment.
+This service manages sale points, its costs and its credentials, providing secure access and data retrieval. Built with Spring Boot framework, it leverages Redis for caching and MongoDB for reliable persistent storage. Encapsulated in Docker containers for deployment and orchestrated by Kubernetes (using Kind for local development). Logs are collected by Fluent Bit, aggregated within Loki, and visualized through Grafana. Sensitive information is securely managed using Kubernetes Secrets.
 
-## Technologies
+## ✨ Technologies ✨
 
-* Java 17
-* Spring Boot 3.4.4
-* Redis (for caching)
-* MongoDB (for data storage)
-* Docker & Docker Compose
-* Maven
+* **Core:** Java 17 ☕, Spring Boot 3.4.4 🚀
+* **Data:** Redis (Caching) ⚡, MongoDB (Persistence) 💾
+* **Build:** Maven 🛠️
+* **Containerization:** Docker 🐳
+* **Orchestration:** Kubernetes (Kind) ☸️
+* **Logging:** Fluent Bit (Forwarding), Loki (Aggregation), Grafana (Visualization) 📊
 
-## Getting Started
+## 🛠️ Getting Started 🛠️
 
-### Prerequisites
+### ⚙️ Pre-requisites
 
-* Java Development Kit (JDK) 17 or later
-* Maven 3.8.0 or later
-* Docker and Docker Compose (recommended)
+Ensure the following are installed on your system:
 
-### Cloning the Repository
+* [Java Development Kit (JDK) 17+](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) (from Oracle) ☕
+* Alternatively, you can find OpenJDK 17 distributions [here](https://openjdk.java.net/install/) or via your operating system's package manager.
+* [Maven 3.8.0+](https://maven.apache.org/install.html) 🛠️
+* [Docker](https://docs.docker.com/get-docker/) 🐳
+* **Kind** (for local Kubernetes cluster) ☸️ - [Installation Guide](https://kind.sigs.k8s.io/docs/user/quick-start#installation)
+* **kubectl** (Kubernetes command-line tool) ☸️ - [Installation Guide](https://kubernetes.io/docs/tasks/tools/)
 
+### 💾 Cloning the Repository
+
+```bash
 git clone https://github.com/amealn/challenge-java-v2.git
 cd challenge-java-v2
+```
 
-### .env file
+### 🔑 Adding `secrets.yaml`
 
-Create an .env file with credentials provided by the administrator
-An .env.test file is provided as an example of the contents
+Locate the `secrets.yaml` file provided by the administrator and place it in the `k8s` directory of your cloned repository. This file contains sensitive configuration as Kubernetes Secrets.
 
-## Profiles
+### 🏃 Running Locally (with Kind)
 
-* **`prod`:** Uses MongoDB Atlas (configured via `MONGODB_ATLAS_URI`).
-* **`test`:** Uses a Dockerized MongoDB for isolated integration testing.
+Follow these steps to build and deploy the application on your local Kind Kubernetes cluster:
 
-Profiles are set via `SPRING_PROFILES_ACTIVE`. Docker Compose handles this automatically; Maven requires manual setting.
+```bash
+mvn clean deploy
+kind create cluster --name kind
+kind load docker-image challenge-java-v2:latest --name kind
+kubectl apply -f k8s/
+```
 
-## Docker Setup
+### 🌐 Accessing Services
 
-* **`Dockerfile`:** Builds the application image for production.
-* **`Dockerfile.test`:** Builds a test image, including test dependencies.
-* **`docker-compose.yml`:** Starts the application and Redis for production.
-* **`docker-compose.test.yml`:** Starts the application, Redis, and MongoDB for testing.
-* **`init.mongo.js`:** Initializes the MongoDB test database.
+Open two separate terminal windows to set up port forwarding for accessing the API and Grafana:
 
-## Running the Application
+### 🔗 Swagger UI (API Documentation) 📖
 
-Use these Maven commands with Docker Compose:
+```bash
+kubectl port-forward service/app-service 8080:2911
+```
 
-1.  **Production:**
+Open your web browser and navigate to: http://localhost:8080/swagger-ui.html to explore the API documentation.
 
-    ```bash
-    mvn clean package docker:build docker-compose:up -P prod
-    ```
+### 📊 Grafana (Log Visualization) 📈
 
-    Base directory: `${workspace_loc:/challenge-java-v2}`
+```bash
+kubectl port-forward service/grafana 3000:3000
+```
 
-2.  **Testing:**
+Open your web browser and navigate to: [http://localhost:3000](http://localhost:3000)
 
-    ```bash
-    mvn clean verify docker-compose:up -P test
-    ```
+**Login Credentials:**
 
-    Base directory: `${workspace_loc:/challenge-java-v2}`
+- **Username:** `admin` 👤
+- **Password:** `admin` 🔑
 
-**Configuration:**
+**Add Loki Data Source:**
 
-* `.env` file is required for `prod` profile (`MONGODB_ATLAS_URI`).
-* Docker Compose files must be correctly configured for both profiles.
+1. Go to **Connections** (or **Data Sources**).
+2. Click **Add new connection**.
+3. Search for and select **Loki**.
+4. Enter the URL: `http://loki.default.svc.cluster.local:3100`
+5. Click **Save & test**.
+
+**View Application Logs:**
+
+1. Navigate to the **Explore** section.
+2. Select your **Loki** data source.
+3. Run the following LogQL query to see your application logs:
+
+```bash
+{job="challenge-java-v2", container="app"}
+```
+
